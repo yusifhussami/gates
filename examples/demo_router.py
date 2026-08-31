@@ -1,5 +1,3 @@
-"""Day-one stub router. Swap this for your real model call."""
-
 from __future__ import annotations
 
 import json

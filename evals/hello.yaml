@@ -1,4 +1,4 @@
-# Start here. Two simple cases — edit `input` or `expect` and re-run run_evals.py.
+# edit input/expect, re-run run_evals.py
 
 - id: says_hi
   input: "hello"

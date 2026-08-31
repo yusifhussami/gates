@@ -3,6 +3,8 @@ from __future__ import annotations
 from collections.abc import Callable, Iterable
 from dataclasses import dataclass
 
+from typing import Any
+
 from gates.case import Case, Result
 
 
@@ -32,7 +34,7 @@ def run_suite(cases: Iterable[Case], fn: Callable[[str], Any]) -> SuiteReport:
             got = fn(case.input)
             ok = case.scorer(got, case.expect)
             results.append(Result(case=case, got=got, passed=ok))
-        except Exception as exc:  # noqa: BLE001 — eval harness should keep going
+        except Exception as exc:  # noqa: BLE001 — keep going
             results.append(
                 Result(case=case, got=None, passed=False, error=str(exc))
             )

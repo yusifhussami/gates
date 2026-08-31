@@ -5,7 +5,7 @@ build-backend = "hatchling.build"
 [project]
 name = "gates"
 version = "0.1.0"
-description = "Regression gates for LLM routing decisions"
+description = "yaml eval cases for llm routers"
 readme = "README.md"
 requires-python = ">=3.9"
 license = { text = "MIT" }

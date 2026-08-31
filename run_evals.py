@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-"""Run a YAML eval suite against a callable."""
 
 from __future__ import annotations
 
@@ -46,7 +45,7 @@ def main() -> int:
 
     print(f"\n{report.passed}/{len(report.results)} passed")
     if report.failed:
-        print("Tip: open the YAML file and check `expect` matches what your router returns.")
+        print("check expect in the yaml matches what your router returns", file=sys.stderr)
     return 0 if report.failed == 0 else 1
 
 

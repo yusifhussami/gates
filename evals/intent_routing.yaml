@@ -17,7 +17,7 @@
   input: "cancel it"
   expect: [clarify, support]
   scorer: one_of
-  note: underspecified — either clarify or hand off
+  note: vague cancel — clarify or support both ok
 
 - id: refund_json
   input: "I was charged twice for my subscription"

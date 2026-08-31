@@ -1,5 +1,3 @@
-"""Smallest possible router — good starting point for your first eval run."""
-
 
 def route(text: str) -> str:
     t = text.lower().strip()
