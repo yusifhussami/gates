@@ -13,7 +13,9 @@ from gates.runner import run_suite
 
 
 def main() -> int:
-    p = argparse.ArgumentParser(description="Run gates eval suite")
+    p = argparse.ArgumentParser(
+        description="Run eval cases from a YAML file against your router function.",
+    )
     p.add_argument("suite", type=Path, help="path to YAML cases")
     p.add_argument(
         "--fn",
@@ -24,7 +26,7 @@ def main() -> int:
 
     mod_name, _, attr = args.fn.partition(":")
     if not attr:
-        print("use module:callable", file=sys.stderr)
+        print("Pass a function like: examples.hello_router:route", file=sys.stderr)
         return 2
 
     mod = importlib.import_module(mod_name)
@@ -43,6 +45,8 @@ def main() -> int:
         print(line)
 
     print(f"\n{report.passed}/{len(report.results)} passed")
+    if report.failed:
+        print("Tip: open the YAML file and check `expect` matches what your router returns.")
     return 0 if report.failed == 0 else 1
 
 

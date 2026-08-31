@@ -1,0 +1,9 @@
+# Start here. Two simple cases — edit `input` or `expect` and re-run run_evals.py.
+
+- id: says_hi
+  input: "hello"
+  expect: smalltalk
+
+- id: not_weather
+  input: "what is the capital of france"
+  expect: other
