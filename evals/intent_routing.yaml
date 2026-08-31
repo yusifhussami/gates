@@ -1,0 +1,28 @@
+- id: greet
+  input: "hey there"
+  expect: smalltalk
+  tags: [baseline]
+
+- id: weather
+  input: "what's the forecast for tomorrow"
+  expect: weather
+  tags: [baseline]
+
+- id: book_flight
+  input: "find me a flight to lisbon next friday"
+  expect: travel
+  tags: [baseline, travel]
+
+- id: ambiguous_cancel
+  input: "cancel it"
+  expect: [clarify, support]
+  scorer: one_of
+  note: underspecified — either clarify or hand off
+
+- id: refund_json
+  input: "I was charged twice for my subscription"
+  expect:
+    intent: billing
+    urgency: high
+  scorer: json_keys
+  tags: [billing]
