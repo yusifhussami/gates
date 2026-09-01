@@ -14,6 +14,8 @@ _SCORERS = {
     "json_keys": json_keys,
 }
 
+_REQUIRED_FIELDS = ("id", "input", "expect")
+
 
 def load_cases(path: str | Path) -> list[Case]:
     raw = yaml.safe_load(Path(path).read_text())
@@ -21,11 +23,20 @@ def load_cases(path: str | Path) -> list[Case]:
         raise ValueError(f"{path}: expected a list of cases")
 
     cases: list[Case] = []
-    for row in raw:
+    for i, row in enumerate(raw):
+        where = f"{path}: case {i}" + (f" ({row.get('id')!r})" if isinstance(row, dict) and row.get("id") else "")
+
+        if not isinstance(row, dict):
+            raise ValueError(f"{where}: expected a mapping with id/input/expect, got {row!r}")
+
+        for field in _REQUIRED_FIELDS:
+            if field not in row:
+                raise ValueError(f"{where}: missing required field '{field}'")
+
         scorer_name = row.get("scorer", "exact")
         scorer = _SCORERS.get(scorer_name)
         if scorer is None:
-            raise ValueError(f"unknown scorer: {scorer_name}")
+            raise ValueError(f"{where}: unknown scorer '{scorer_name}', pick one of {list(_SCORERS)}")
 
         cases.append(
             Case(
