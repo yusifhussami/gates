@@ -28,8 +28,17 @@ def main() -> int:
         print("Pass a function like: examples.hello_router:route", file=sys.stderr)
         return 2
 
-    mod = importlib.import_module(mod_name)
-    fn = getattr(mod, attr)
+    try:
+        mod = importlib.import_module(mod_name)
+    except ImportError as exc:
+        print(f"can't import '{mod_name}': {exc}", file=sys.stderr)
+        return 2
+
+    try:
+        fn = getattr(mod, attr)
+    except AttributeError:
+        print(f"'{mod_name}' has no function '{attr}'", file=sys.stderr)
+        return 2
 
     report = run_suite(load_cases(args.suite), fn)
 
