@@ -95,3 +95,16 @@ gates/load.py:4:1: 'typing.Any' imported but unused
 Leftover from an earlier version of the file — `Any` isn't referenced anywhere in `load.py` anymore. Deleted the import.
 
 14 tests pass, hello eval 2/2, intent eval 5/5, `--tags travel` still gives 1/1.
+
+## 2026-09-02 (again)
+
+Ran pyflakes again after this morning's cleanup and it caught two more leftovers: `json` unused in `tests/test_demo_router.py` and `Result` unused in `tests/test_runner.py`.
+
+```
+tests/test_demo_router.py:1:1: 'json' imported but unused
+tests/test_runner.py:2:1: 'gates.case.Result' imported but unused
+```
+
+Removed both. `pyflakes gates run_evals.py tests` comes back clean now.
+
+14 tests pass, hello eval 2/2, intent eval 5/5.

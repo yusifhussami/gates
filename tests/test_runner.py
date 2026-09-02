@@ -1,5 +1,5 @@
 from gates import exact, json_keys, one_of
-from gates.case import Case, Result
+from gates.case import Case
 from gates.runner import run_suite
 
 
