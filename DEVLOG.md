@@ -83,3 +83,15 @@ no cases match --tags 'nope'
 Four new tests in `tests/test_tags.py`: two unit tests on `filter_by_tags`, two CLI ones (a real subset run, and the no-match error). Added a "run a subset" section to the README with a runnable example.
 
 14 tests pass, hello eval 2/2, intent eval 5/5, and `--tags travel` on its own gives 1/1 (just `book_flight`).
+
+## 2026-09-02 (later)
+
+Main already had the `--tags` feature from earlier today, so kept this one tiny. Ran `pyflakes` over the package just to poke at it, and it flagged this:
+
+```
+gates/load.py:4:1: 'typing.Any' imported but unused
+```
+
+Leftover from an earlier version of the file — `Any` isn't referenced anywhere in `load.py` anymore. Deleted the import.
+
+14 tests pass, hello eval 2/2, intent eval 5/5, `--tags travel` still gives 1/1.
