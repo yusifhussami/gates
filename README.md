@@ -46,6 +46,25 @@ Re-run the command. Wrong answer → `[FAIL]` with what your router actually ret
 
 Multiple valid answers: `scorer: one_of` and a list in `expect`. Partial JSON: `scorer: json_keys`. See `evals/intent_routing.yaml`.
 
+## run a subset
+
+Tag cases in the yaml:
+
+```yaml
+- id: book_flight
+  input: "find me a flight to lisbon"
+  expect: travel
+  tags: [travel]
+```
+
+Then run just those:
+
+```bash
+PYTHONPATH=. python run_evals.py evals/intent_routing.yaml --fn examples.demo_router:route --tags travel
+```
+
+Comma-separate to match more than one tag: `--tags travel,billing`.
+
 ## tests
 
 ```bash

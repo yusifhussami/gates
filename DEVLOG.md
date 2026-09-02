@@ -69,3 +69,17 @@ can't import 'nope.module': No module named 'nope'
 ```
 
 Main already had a commit today (the yaml field-check fix), so kept this one small. 10 tests pass, hello eval 2/2, intent eval 5/5.
+
+## 2026-09-02
+
+VOICE.md's own example commit message mentions "tried adding `--tags` to run_evals.py", which was never actually true, so made it true. Added `--tags` to the CLI: comma-separated tags, only runs cases whose `tags` list overlaps. `evals/intent_routing.yaml` already had tags on most cases (`baseline`, `travel`, `billing`) with nowhere to use them until now.
+
+Pulled the filtering into its own `filter_by_tags(cases, tags_arg)` function in `run_evals.py` so it's testable directly, not just through subprocess. Also made an empty result after filtering a clear error instead of silently printing "0/0 passed":
+
+```
+no cases match --tags 'nope'
+```
+
+Four new tests in `tests/test_tags.py`: two unit tests on `filter_by_tags`, two CLI ones (a real subset run, and the no-match error). Added a "run a subset" section to the README with a runnable example.
+
+14 tests pass, hello eval 2/2, intent eval 5/5, and `--tags travel` on its own gives 1/1 (just `book_flight`).

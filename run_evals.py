@@ -7,8 +7,14 @@ import importlib
 import sys
 from pathlib import Path
 
+from gates.case import Case
 from gates.load import load_cases
 from gates.runner import run_suite
+
+
+def filter_by_tags(cases: list[Case], tags_arg: str) -> list[Case]:
+    wanted = {t.strip() for t in tags_arg.split(",") if t.strip()}
+    return [c for c in cases if set(c.tags) & wanted]
 
 
 def main() -> int:
@@ -20,6 +26,10 @@ def main() -> int:
         "--fn",
         required=True,
         help="dotted path to callable, e.g. examples.demo_router:route",
+    )
+    p.add_argument(
+        "--tags",
+        help="comma-separated tags, e.g. --tags baseline,billing — only runs cases with a matching tag",
     )
     args = p.parse_args()
 
@@ -40,7 +50,14 @@ def main() -> int:
         print(f"'{mod_name}' has no function '{attr}'", file=sys.stderr)
         return 2
 
-    report = run_suite(load_cases(args.suite), fn)
+    cases = load_cases(args.suite)
+    if args.tags:
+        cases = filter_by_tags(cases, args.tags)
+        if not cases:
+            print(f"no cases match --tags {args.tags!r}", file=sys.stderr)
+            return 2
+
+    report = run_suite(cases, fn)
 
     for r in report.results:
         mark = "ok" if r.passed else "FAIL"
