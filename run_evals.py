@@ -50,7 +50,12 @@ def main() -> int:
         print(f"'{mod_name}' has no function '{attr}'", file=sys.stderr)
         return 2
 
-    cases = load_cases(args.suite)
+    try:
+        cases = load_cases(args.suite)
+    except FileNotFoundError:
+        print(f"can't find suite file '{args.suite}'", file=sys.stderr)
+        return 2
+
     if args.tags:
         cases = filter_by_tags(cases, args.tags)
         if not cases:

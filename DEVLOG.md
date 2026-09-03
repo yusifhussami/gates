@@ -125,3 +125,19 @@ ValueError: /tmp/bad_tags.yaml: case 0 ('oops'): 'tags' should be a list like ['
 ```
 
 Added a test for it in `tests/test_load.py`. 15 tests pass, hello eval 2/2, intent eval 5/5, `--tags travel` still gives 1/1.
+
+## 2026-09-03 (again)
+
+Main already had today's tags fix, so kept this small. Pointed run_evals.py at a suite file that doesn't exist and got a raw traceback:
+
+```
+FileNotFoundError: [Errno 2] No such file or directory: 'evals/nope.yaml'
+```
+
+Wrapped the `load_cases` call in main() in a try/except so a missing file prints something useful and exits 2 instead of a stack trace, same treatment the `--fn` errors already got:
+
+```
+can't find suite file 'evals/nope.yaml'
+```
+
+Added a CLI test for it in `tests/test_tags.py` next to the other subprocess error tests. 16 tests pass, hello eval 2/2, intent eval 5/5.
