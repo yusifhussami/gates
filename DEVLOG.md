@@ -151,3 +151,26 @@ Main already had two commits today, so kept this tiny. Noticed `note` on a case 
 ```
 
 One test in a new `tests/test_notes.py`, CLI-through-subprocess like the others. 17 tests pass, hello eval 2/2, intent eval 5/5.
+
+## 2026-09-03 (yet again)
+
+Small goal: poke at `load_cases` for another quiet-mistake case, since the tags/note ones from earlier today went well. Copy-pasted a case in a yaml file (easy to do when you're adding a similar test) and forgot to change the id:
+
+```yaml
+- id: greet
+  input: hi
+  expect: smalltalk
+- id: greet
+  input: hello there
+  expect: smalltalk
+```
+
+Loaded fine, both cases just sat there with `id="greet"`. Not a crash, but if the second one fails you'd stare at a `[FAIL] greet` line with no way to tell which yaml entry it actually was. Added a `seen_ids` set in `load_cases` — second time an id shows up, it's a `ValueError` instead:
+
+```
+ValueError: /tmp/dup.yaml: case 1 ('greet'): duplicate id, already used earlier in this file
+```
+
+One test in `tests/test_load.py`. Didn't wire this into run_evals.py's try/except (only `FileNotFoundError` is special-cased there right now) — same as the other `load_cases` errors like bad scorer or bad tags, so at least it's consistent, just not as polished as it could be. Maybe a job for another day: catch `ValueError` from `load_cases` in `main()` too.
+
+18 tests pass, hello eval 2/2, intent eval 5/5.

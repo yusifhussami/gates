@@ -22,6 +22,7 @@ def load_cases(path: str | Path) -> list[Case]:
         raise ValueError(f"{path}: expected a list of cases")
 
     cases: list[Case] = []
+    seen_ids: set[str] = set()
     for i, row in enumerate(raw):
         where = f"{path}: case {i}" + (f" ({row.get('id')!r})" if isinstance(row, dict) and row.get("id") else "")
 
@@ -31,6 +32,10 @@ def load_cases(path: str | Path) -> list[Case]:
         for field in _REQUIRED_FIELDS:
             if field not in row:
                 raise ValueError(f"{where}: missing required field '{field}'")
+
+        if row.get("id") in seen_ids:
+            raise ValueError(f"{where}: duplicate id, already used earlier in this file")
+        seen_ids.add(row.get("id"))
 
         scorer_name = row.get("scorer", "exact")
         scorer = _SCORERS.get(scorer_name)

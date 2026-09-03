@@ -40,3 +40,16 @@ def test_load_string_tags_gives_clear_error(tmp_path):
         assert False, "expected ValueError"
     except ValueError as exc:
         assert "'tags' should be a list" in str(exc)
+
+
+def test_load_duplicate_id_gives_clear_error(tmp_path):
+    bad = tmp_path / "bad.yaml"
+    bad.write_text(
+        "- id: greet\n  input: hi\n  expect: smalltalk\n"
+        "- id: greet\n  input: hello there\n  expect: smalltalk\n"
+    )
+    try:
+        load_cases(bad)
+        assert False, "expected ValueError"
+    except ValueError as exc:
+        assert "duplicate id" in str(exc)
