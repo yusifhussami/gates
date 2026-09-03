@@ -171,6 +171,27 @@ Loaded fine, both cases just sat there with `id="greet"`. Not a crash, but if th
 ValueError: /tmp/dup.yaml: case 1 ('greet'): duplicate id, already used earlier in this file
 ```
 
-One test in `tests/test_load.py`. Didn't wire this into run_evals.py's try/except (only `FileNotFoundError` is special-cased there right now) — same as the other `load_cases` errors like bad scorer or bad tags, so at least it's consistent, just not as polished as it could be. Maybe a job for another day: catch `ValueError` from `load_cases` in `main()` too.
+One test in `tests/test_load.py`. Didn't wire this into run_evals.py's try/except (only `FileNotFoundError` is special-cased there right now) — same as the other load_cases errors like bad scorer or bad tags, so at least it's consistent, just not as polished as it could be. Maybe a job for another day: catch `ValueError` from `load_cases` in `main()` too.
 
 18 tests pass, hello eval 2/2, intent eval 5/5.
+
+## 2026-09-03 (one more time)
+
+Main already had four commits today (missing-field/tags checks, missing-suite-file handling, note-on-fail, duplicate-id catch), so this one is DEVLOG-only — no code shipped.
+
+Followed up on the "job for another day" note from the duplicate-id entry earlier today: `run_evals.py`'s `main()` only special-cases `FileNotFoundError` around the `load_cases()` call, so every other `load_cases` error — missing field, unknown scorer, bad tags, duplicate id — still crashes with a raw traceback instead of the clean one-line message `load_cases` itself raises. Reproduced it in a fresh clone with the same duplicate-id yaml from earlier today:
+
+```
+Traceback (most recent call last):
+  File "/home/user/gates/run_evals.py", line 86, in <module>
+    raise SystemExit(main())
+  File "/home/user/gates/run_evals.py", line 54, in main
+    cases = load_cases(args.suite)
+  File "/home/user/gates/gates/load.py", line 37, in load_cases
+    raise ValueError(f"{where}: duplicate id, already used earlier in this file")
+ValueError: /tmp/dup.yaml: case 1 ('greet'): duplicate id, already used earlier in this file
+```
+
+Next idea: catch `ValueError` the same way `FileNotFoundError` is caught in `main()`, print it to stderr, exit 2 — one shared except block instead of one per error type.
+
+No code changed this session, so no new test run to report; last known-good count was 18 tests, hello eval 2/2, intent eval 5/5, from the duplicate-id commit earlier today.
