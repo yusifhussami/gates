@@ -30,3 +30,13 @@ def test_load_unknown_scorer_gives_clear_error(tmp_path):
         assert False, "expected ValueError"
     except ValueError as exc:
         assert "unknown scorer 'nope'" in str(exc)
+
+
+def test_load_string_tags_gives_clear_error(tmp_path):
+    bad = tmp_path / "bad.yaml"
+    bad.write_text("- id: oops\n  input: hi\n  expect: yes\n  tags: baseline\n")
+    try:
+        load_cases(bad)
+        assert False, "expected ValueError"
+    except ValueError as exc:
+        assert "'tags' should be a list" in str(exc)

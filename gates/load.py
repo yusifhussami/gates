@@ -37,13 +37,19 @@ def load_cases(path: str | Path) -> list[Case]:
         if scorer is None:
             raise ValueError(f"{where}: unknown scorer '{scorer_name}', pick one of {list(_SCORERS)}")
 
+        tags = row.get("tags", [])
+        if not isinstance(tags, (list, tuple)):
+            raise ValueError(
+                f"{where}: 'tags' should be a list like [{tags!r}], got {tags!r}"
+            )
+
         cases.append(
             Case(
                 id=row["id"],
                 input=row["input"],
                 expect=row["expect"],
                 scorer=scorer,
-                tags=tuple(row.get("tags", [])),
+                tags=tuple(tags),
                 note=row.get("note"),
             )
         )

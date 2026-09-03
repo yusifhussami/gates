@@ -108,3 +108,20 @@ tests/test_runner.py:2:1: 'gates.case.Result' imported but unused
 Removed both. `pyflakes gates run_evals.py tests` comes back clean now.
 
 14 tests pass, hello eval 2/2, intent eval 5/5.
+
+## 2026-09-03
+
+Small goal: poke at `tags` since it hasn't had much attention. Tried the beginner typo of writing `tags: baseline` instead of `tags: [baseline]` in a yaml case. No error, it just quietly loaded wrong:
+
+```
+>>> load_cases('/tmp/bad_tags.yaml')[0].tags
+('b', 'a', 's', 'e', 'l', 'i', 'n', 'e')
+```
+
+`tuple(row.get("tags", []))` happily walks a string character by character, so `--tags baseline` would never match a case that meant to have that tag, and you'd get no hint why. Added a check in `load_cases` that `tags` has to be a list before it's accepted, so the same file now gives:
+
+```
+ValueError: /tmp/bad_tags.yaml: case 0 ('oops'): 'tags' should be a list like ['baseline'], got 'baseline'
+```
+
+Added a test for it in `tests/test_load.py`. 15 tests pass, hello eval 2/2, intent eval 5/5, `--tags travel` still gives 1/1.
