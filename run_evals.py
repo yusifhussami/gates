@@ -72,6 +72,8 @@ def main() -> int:
                 line += f"  error={r.error}"
             else:
                 line += f"  got={r.got!r} expect={r.case.expect!r}"
+            if r.case.note:
+                line += f"  note={r.case.note!r}"
         print(line)
 
     print(f"\n{report.passed}/{len(report.results)} passed")

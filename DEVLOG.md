@@ -141,3 +141,13 @@ can't find suite file 'evals/nope.yaml'
 ```
 
 Added a CLI test for it in `tests/test_tags.py` next to the other subprocess error tests. 16 tests pass, hello eval 2/2, intent eval 5/5.
+
+## 2026-09-03 (once more)
+
+Main already had two commits today, so kept this tiny. Noticed `note` on a case (like `ambiguous_cancel`, which explains why two answers are both fine) gets loaded into `Case` but never shows up anywhere. If that case fails, you just get `got=... expect=...` with no reminder of why it's fuzzy. Added it to the FAIL line when present:
+
+```
+[FAIL] bad_guess  got='other' expect='not_gonna_match'  note='known flaky, ok to ignore for now'
+```
+
+One test in a new `tests/test_notes.py`, CLI-through-subprocess like the others. 17 tests pass, hello eval 2/2, intent eval 5/5.
