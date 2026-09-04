@@ -55,6 +55,9 @@ def main() -> int:
     except FileNotFoundError:
         print(f"can't find suite file '{args.suite}'", file=sys.stderr)
         return 2
+    except ValueError as exc:
+        print(exc, file=sys.stderr)
+        return 2
 
     if args.tags:
         cases = filter_by_tags(cases, args.tags)

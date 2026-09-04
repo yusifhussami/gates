@@ -77,3 +77,31 @@ def test_cli_missing_suite_file_is_clear_error():
     )
     assert proc.returncode == 2
     assert "can't find suite file" in proc.stderr
+
+
+def test_cli_bad_load_error_is_clean_not_a_traceback(tmp_path):
+    bad = tmp_path / "dup.yaml"
+    bad.write_text(
+        "- id: greet\n"
+        "  input: hi\n"
+        "  expect: smalltalk\n"
+        "- id: greet\n"
+        "  input: hello there\n"
+        "  expect: smalltalk\n"
+    )
+    proc = subprocess.run(
+        [
+            sys.executable,
+            str(ROOT / "run_evals.py"),
+            str(bad),
+            "--fn",
+            "examples.demo_router:route",
+        ],
+        cwd=ROOT,
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    assert proc.returncode == 2
+    assert "Traceback" not in proc.stderr
+    assert "duplicate id" in proc.stderr

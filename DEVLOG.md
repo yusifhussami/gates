@@ -195,3 +195,34 @@ ValueError: /tmp/dup.yaml: case 1 ('greet'): duplicate id, already used earlier 
 Next idea: catch `ValueError` the same way `FileNotFoundError` is caught in `main()`, print it to stderr, exit 2 — one shared except block instead of one per error type.
 
 No code changed this session, so no new test run to report; last known-good count was 18 tests, hello eval 2/2, intent eval 5/5, from the duplicate-id commit earlier today.
+
+
+## 2026-09-04
+
+Picked up the "next idea" from yesterday's last entry: `run_evals.py`'s `main()`
+only caught `FileNotFoundError` around `load_cases()`, so every other error it
+raises (missing field, unknown scorer, bad tags, duplicate id) still crashed
+with a raw traceback instead of the clean message `load_cases` already builds.
+Confirmed it first with the same duplicate-id yaml from yesterday:
+
+```
+Traceback (most recent call last):
+  ...
+ValueError: /tmp/dup.yaml: case 1 ('greet'): duplicate id, already used earlier in this file
+```
+
+Added a second `except ValueError as exc:` right after the existing
+`FileNotFoundError` block, printing `exc` straight to stderr and exiting 2.
+No prefix needed — `load_cases`'s `ValueError` messages already say which
+file and case:
+
+```
+$ python run_evals.py /tmp/dup.yaml --fn examples.demo_router:route
+/tmp/dup.yaml: case 1 ('greet'): duplicate id, already used earlier in this file
+```
+
+Added `test_cli_bad_load_error_is_clean_not_a_traceback` in `tests/test_tags.py`,
+next to the other CLI-through-subprocess error tests, using the duplicate-id
+case since it's a `load_cases` error that isn't `FileNotFoundError`.
+
+19 tests pass, hello eval 2/2, intent eval 5/5, `--tags travel` still 1/1.
