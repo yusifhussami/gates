@@ -226,3 +226,27 @@ next to the other CLI-through-subprocess error tests, using the duplicate-id
 case since it's a `load_cases` error that isn't `FileNotFoundError`.
 
 19 tests pass, hello eval 2/2, intent eval 5/5, `--tags travel` still 1/1.
+
+## 2026-09-04 (again)
+
+Poking at `load_cases` some more since the `ValueError` catch-all landed earlier
+today. What if `id` itself isn't a string? YAML happily parses `id: [a, b]` as
+a list, and `case_id in seen_ids` blows up before the duplicate check even
+gets a chance to run:
+
+```
+>>> load_cases("/tmp/bad.yaml")
+TypeError: unhashable type: 'list'
+```
+
+Wrapped that membership check in a try/except and turned it into a `ValueError`
+like the other `load_cases` errors, so `run_evals.py`'s existing except block
+picks it up for free — no changes needed there:
+
+```
+$ python run_evals.py /tmp/bad.yaml --fn examples.demo_router:route
+/tmp/bad.yaml: case 0 (['a', 'b']): 'id' should be a plain value like a string, got ['a', 'b']
+```
+
+One test in `tests/test_load.py`. 20 tests pass, hello eval 2/2, intent eval
+5/5, `--tags travel` still 1/1.

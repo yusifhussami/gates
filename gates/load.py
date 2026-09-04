@@ -33,9 +33,14 @@ def load_cases(path: str | Path) -> list[Case]:
             if field not in row:
                 raise ValueError(f"{where}: missing required field '{field}'")
 
-        if row.get("id") in seen_ids:
+        case_id = row.get("id")
+        try:
+            is_dup = case_id in seen_ids
+        except TypeError:
+            raise ValueError(f"{where}: 'id' should be a plain value like a string, got {case_id!r}") from None
+        if is_dup:
             raise ValueError(f"{where}: duplicate id, already used earlier in this file")
-        seen_ids.add(row.get("id"))
+        seen_ids.add(case_id)
 
         scorer_name = row.get("scorer", "exact")
         scorer = _SCORERS.get(scorer_name)
