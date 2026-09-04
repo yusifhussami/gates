@@ -32,6 +32,13 @@ Five-case example:
 PYTHONPATH=. python run_evals.py evals/intent_routing.yaml --fn examples.demo_router:route
 ```
 
+No LLM hooked up yet? `examples/mock_llm_router.py` fakes one with a plain
+dict lookup, so you can try gates before you've written a real adapter:
+
+```bash
+PYTHONPATH=. python run_evals.py evals/mock_llm.yaml --fn examples.mock_llm_router:route
+```
+
 ## add a case
 
 Edit `evals/hello.yaml`:

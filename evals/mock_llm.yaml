@@ -1,0 +1,14 @@
+# same shape as hello.yaml, pointed at the no-api-key example router. copy
+# this file when you wire up your own LLM adapter.
+
+- id: greet
+  input: "hello"
+  expect: smalltalk
+
+- id: weather
+  input: "what's the weather like"
+  expect: weather
+
+- id: no_match
+  input: "asdfghjkl"
+  expect: unknown

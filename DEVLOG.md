@@ -250,3 +250,33 @@ $ python run_evals.py /tmp/bad.yaml --fn examples.demo_router:route
 
 One test in `tests/test_load.py`. 20 tests pass, hello eval 2/2, intent eval
 5/5, `--tags travel` still 1/1.
+
+## 2026-09-04 (mock llm example)
+
+Third session today, switching away from load_cases error messages for a
+bit. Backlog had "LLM adapter stub (mock first, no API key required)" sitting
+unpicked, and every example router so far (hello_router, demo_router) is
+keyword matching, not anything that looks like a place you'd plug in a real
+model call.
+
+Added `examples/mock_llm_router.py` — a `route()` that looks a phrase up in a
+plain dict instead of calling an API. Comment at the top says what you'd
+swap in for a real adapter. Added `evals/mock_llm.yaml` (3 cases, same shape
+as hello.yaml) and `tests/test_mock_llm_router.py`, copied straight from
+`test_hello_router.py`'s subprocess pattern.
+
+Ran it cold, no bugs this time:
+
+```
+$ PYTHONPATH=. python run_evals.py evals/mock_llm.yaml --fn examples.mock_llm_router:route
+[ok] greet
+[ok] weather
+[ok] no_match
+
+3/3 passed
+```
+
+Added a line to the README's run section pointing at it, for anyone who
+wants to try gates before they've written a real router.
+
+21 tests pass (was 20), hello eval 2/2, intent eval 5/5, mock_llm eval 3/3.
