@@ -17,4 +17,6 @@ def route(text: str) -> str | dict:
         return "clarify"
     if "charged twice" in t or "subscription" in t:
         return json.dumps({"intent": "billing", "urgency": "high"})
+    if "package" in t or "delivery" in t:
+        return "sounds like a shipping question to me"
     return "unknown"

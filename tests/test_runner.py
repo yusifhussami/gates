@@ -1,4 +1,4 @@
-from gates import exact, json_keys, one_of
+from gates import contains, exact, json_keys, one_of
 from gates.case import Case
 from gates.runner import run_suite
 
@@ -19,6 +19,18 @@ def test_one_of_accepts_alternate():
     c = Case(id="a", input="x", expect=["a", "b"], scorer=one_of)
     report = run_suite([c], lambda _: "b")
     assert report.passed == 1
+
+
+def test_contains_matches_substring():
+    c = Case(id="a", input="x", expect="shipping", scorer=contains)
+    report = run_suite([c], lambda _: "sounds like a shipping question")
+    assert report.passed == 1
+
+
+def test_contains_rejects_non_string_got():
+    c = Case(id="a", input="x", expect="shipping", scorer=contains)
+    report = run_suite([c], lambda _: {"intent": "shipping"})
+    assert report.failed == 1
 
 
 def test_json_keys_partial():

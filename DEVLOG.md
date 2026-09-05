@@ -309,3 +309,34 @@ Main already had today's scorer fix, so kept this one small. Poked at `load_case
 Loads fine, no crash. `note` isn't type-checked at all, so a list slips through even though `Case.note` is typed `str | None` — it would just print oddly in a FAIL line, not break anything. Also tried `id: ""` (empty string): loads fine too, just missing from the `where` snippet in error messages since that check uses truthiness (`row.get("id")`) instead of `is None`. Both are cosmetic, not landmines like the earlier ones, so didn't feel worth a fix on their own.
 
 No code changed this session. 22 tests pass, hello eval 2/2, intent eval 5/5, mock_llm eval 3/3.
+
+## 2026-09-05 (contains scorer)
+
+Third pass at gates today, switching off load_cases for a bit. `demo_router`'s
+billing case returns clean JSON, but a real LLM router might just answer in a
+sentence — "sounds like a shipping question to me" — with no exact label to
+match against. `exact` and `one_of` both need the whole value to match, so
+that case had nowhere to go.
+
+Added a `contains` scorer: `expect` just needs to show up somewhere in `got`.
+Registered it in `load.py`'s `_SCORERS` dict next to the others, added a
+`shipping` branch to `demo_router.py` that returns a full sentence, and a
+matching case in `intent_routing.yaml`.
+
+Ran the suite and immediately broke a test:
+
+```
+    def test_load_intent_suite():
+        path = Path(__file__).resolve().parents[1] / "evals" / "intent_routing.yaml"
+        cases = load_cases(path)
+>       assert len(cases) == 5
+E       assert 6 == 5
+```
+
+Forgot that test hardcodes the case count. Bumped it to 6.
+
+Learned: any test asserting "N cases" in a yaml file breaks the moment you
+add a case — worth remembering before adding more.
+
+24 tests pass (was 22), hello eval 2/2, intent eval 6/6 (was 5/5), mock_llm
+eval 3/3.

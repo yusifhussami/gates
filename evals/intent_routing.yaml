@@ -26,3 +26,9 @@
     urgency: high
   scorer: json_keys
   tags: [billing]
+
+- id: shipping_sentence
+  input: "where is my package"
+  expect: shipping
+  scorer: contains
+  note: router answers in a full sentence, not a clean label — contains just checks it mentions the topic

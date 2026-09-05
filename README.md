@@ -51,7 +51,10 @@ Edit `evals/hello.yaml`:
 
 Re-run the command. Wrong answer → `[FAIL]` with what your router actually returned.
 
-Multiple valid answers: `scorer: one_of` and a list in `expect`. Partial JSON: `scorer: json_keys`. See `evals/intent_routing.yaml`.
+Multiple valid answers: `scorer: one_of` and a list in `expect`. Partial JSON:
+`scorer: json_keys`. Router returns a whole sentence instead of a clean label:
+`scorer: contains` checks `expect` shows up anywhere in the string. See
+`evals/intent_routing.yaml`.
 
 ## run a subset
 

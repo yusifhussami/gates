@@ -14,6 +14,12 @@ def one_of(got: Any, expect: Any) -> bool:
     return got in expect
 
 
+def contains(got: Any, expect: Any) -> bool:
+    if not isinstance(got, str):
+        return False
+    return str(expect) in got
+
+
 def json_keys(got: Any, expect: Any) -> bool:
     if isinstance(got, str):
         try:

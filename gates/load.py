@@ -5,11 +5,12 @@ from pathlib import Path
 import yaml
 
 from gates.case import Case
-from gates.scorers import exact, json_keys, one_of
+from gates.scorers import contains, exact, json_keys, one_of
 
 _SCORERS = {
     "exact": exact,
     "one_of": one_of,
+    "contains": contains,
     "json_keys": json_keys,
 }
 
