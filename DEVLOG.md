@@ -296,3 +296,16 @@ ValueError: /tmp/bad_scorer.yaml: case 0 ('oops'): 'scorer' should be a plain va
 ```
 
 One test in `tests/test_load.py`, copied from `test_load_unhashable_id_gives_clear_error`. 22 tests pass, hello eval 2/2, intent eval 5/5, mock_llm eval 3/3.
+
+## 2026-09-05 (again)
+
+Main already had today's scorer fix, so kept this one small. Poked at `load_cases` for another silent-mistake field, same idea as the `id`/`scorer`/`tags` checks from the last few days. Tried a non-string `note`:
+
+```
+>>> load_cases('/tmp/bad_note.yaml')[0].note
+['known', 'flaky']
+```
+
+Loads fine, no crash. `note` isn't type-checked at all, so a list slips through even though `Case.note` is typed `str | None` — it would just print oddly in a FAIL line, not break anything. Also tried `id: ""` (empty string): loads fine too, just missing from the `where` snippet in error messages since that check uses truthiness (`row.get("id")`) instead of `is None`. Both are cosmetic, not landmines like the earlier ones, so didn't feel worth a fix on their own.
+
+No code changed this session. 22 tests pass, hello eval 2/2, intent eval 5/5, mock_llm eval 3/3.
