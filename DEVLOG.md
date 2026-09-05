@@ -280,3 +280,19 @@ Added a line to the README's run section pointing at it, for anyone who
 wants to try gates before they've written a real router.
 
 21 tests pass (was 20), hello eval 2/2, intent eval 5/5, mock_llm eval 3/3.
+
+## 2026-09-05
+
+Kept poking at `load_cases` for the same kind of quiet mistake as the `id` one from a couple days ago. What if `scorer` isn't a string? YAML parses `scorer: [exact]` as a list, and `_SCORERS.get(scorer_name)` blows up before it even gets to the "unknown scorer" check:
+
+```
+TypeError: unhashable type: 'list'
+```
+
+Wrapped that `.get()` call in a try/except, same shape as the `id` fix — turns it into:
+
+```
+ValueError: /tmp/bad_scorer.yaml: case 0 ('oops'): 'scorer' should be a plain value like a string, got ['exact']
+```
+
+One test in `tests/test_load.py`, copied from `test_load_unhashable_id_gives_clear_error`. 22 tests pass, hello eval 2/2, intent eval 5/5, mock_llm eval 3/3.

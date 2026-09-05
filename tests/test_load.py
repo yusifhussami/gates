@@ -63,3 +63,13 @@ def test_load_unhashable_id_gives_clear_error(tmp_path):
         assert False, "expected ValueError"
     except ValueError as exc:
         assert "'id' should be a plain value" in str(exc)
+
+
+def test_load_unhashable_scorer_gives_clear_error(tmp_path):
+    bad = tmp_path / "bad.yaml"
+    bad.write_text("- id: oops\n  input: hi\n  expect: smalltalk\n  scorer: [exact]\n")
+    try:
+        load_cases(bad)
+        assert False, "expected ValueError"
+    except ValueError as exc:
+        assert "'scorer' should be a plain value" in str(exc)

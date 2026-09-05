@@ -43,7 +43,12 @@ def load_cases(path: str | Path) -> list[Case]:
         seen_ids.add(case_id)
 
         scorer_name = row.get("scorer", "exact")
-        scorer = _SCORERS.get(scorer_name)
+        try:
+            scorer = _SCORERS.get(scorer_name)
+        except TypeError:
+            raise ValueError(
+                f"{where}: 'scorer' should be a plain value like a string, got {scorer_name!r}"
+            ) from None
         if scorer is None:
             raise ValueError(f"{where}: unknown scorer '{scorer_name}', pick one of {list(_SCORERS)}")
 
