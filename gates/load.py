@@ -41,6 +41,8 @@ def load_cases(path: str | Path) -> list[Case]:
             raise ValueError(f"{where}: 'id' should be a plain value like a string, got {case_id!r}") from None
         if is_dup:
             raise ValueError(f"{where}: duplicate id, already used earlier in this file")
+        if not isinstance(case_id, str):
+            raise ValueError(f"{where}: 'id' should be a string, got {case_id!r}")
         seen_ids.add(case_id)
 
         scorer_name = row.get("scorer", "exact")

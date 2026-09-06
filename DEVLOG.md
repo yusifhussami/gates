@@ -27,6 +27,7 @@ Running notes. Read `VOICE.md` before writing here.
 - [2026-09-06 (yet again)](#2026-09-06-yet-again)
 - [2026-09-06 (index)](#2026-09-06-index)
 - [2026-09-06 (tags)](#2026-09-06-tags)
+- [2026-09-06 (id)](#2026-09-06-id)
 
 ## 2026-08-31
 
@@ -431,3 +432,16 @@ Sixth session on main today, so kept this tiny. Same family of bug as the old `n
 Not a crash, but a quiet footgun: `run_evals.py --tags travel` filters by comparing strings, so a case tagged with an int would just never match any `--tags` filter and you'd never know why. Added a check right after the list check, one line per item, same pattern as `id`/`scorer`/`note`. One test in `tests/test_load.py`.
 
 27 tests pass (was 26), hello eval 2/2, intent eval 6/6, mock_llm eval 3/3.
+
+## 2026-09-06 (id)
+
+Same shape as the tags and note gaps: `id` was checked for being hashable (a list or dict id already gave a clear error) but nothing stopped a number from sliding through, even though `Case.id` is typed `str`.
+
+```
+>>> load_cases('/tmp/bad_id.yaml')[0].id
+123
+```
+
+Duplicate-id checks and `--tags` filtering both assume strings downstream, so this was one more version of the same footgun as before. Added the check right after the hashability one, same pattern as `tags`/`note`. One test in `tests/test_load.py`.
+
+28 tests pass (was 27), hello eval 2/2, intent eval 6/6, mock_llm eval 3/3.
