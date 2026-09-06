@@ -73,3 +73,13 @@ def test_load_unhashable_scorer_gives_clear_error(tmp_path):
         assert False, "expected ValueError"
     except ValueError as exc:
         assert "'scorer' should be a plain value" in str(exc)
+
+
+def test_load_empty_id_still_shown_in_error(tmp_path):
+    bad = tmp_path / "bad.yaml"
+    bad.write_text("- id: ''\n  input: hi\n")  # no expect, id is empty string
+    try:
+        load_cases(bad)
+        assert False, "expected ValueError"
+    except ValueError as exc:
+        assert "('')" in str(exc)

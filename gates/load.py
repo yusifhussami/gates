@@ -25,7 +25,7 @@ def load_cases(path: str | Path) -> list[Case]:
     cases: list[Case] = []
     seen_ids: set[str] = set()
     for i, row in enumerate(raw):
-        where = f"{path}: case {i}" + (f" ({row.get('id')!r})" if isinstance(row, dict) and row.get("id") else "")
+        where = f"{path}: case {i}" + (f" ({row.get('id')!r})" if isinstance(row, dict) and row.get("id") is not None else "")
 
         if not isinstance(row, dict):
             raise ValueError(f"{where}: expected a mapping with id/input/expect, got {row!r}")
