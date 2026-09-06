@@ -2,6 +2,30 @@
 
 Running notes. Read `VOICE.md` before writing here.
 
+## index
+
+- [2026-08-31](#2026-08-31)
+- [2026-09-01](#2026-09-01)
+- [2026-09-01 (later)](#2026-09-01-later)
+- [2026-09-02](#2026-09-02)
+- [2026-09-02 (later)](#2026-09-02-later)
+- [2026-09-02 (again)](#2026-09-02-again)
+- [2026-09-03](#2026-09-03)
+- [2026-09-03 (again)](#2026-09-03-again)
+- [2026-09-03 (once more)](#2026-09-03-once-more)
+- [2026-09-03 (yet again)](#2026-09-03-yet-again)
+- [2026-09-03 (one more time)](#2026-09-03-one-more-time)
+- [2026-09-04](#2026-09-04)
+- [2026-09-04 (again)](#2026-09-04-again)
+- [2026-09-04 (mock llm example)](#2026-09-04-mock-llm-example)
+- [2026-09-05](#2026-09-05)
+- [2026-09-05 (again)](#2026-09-05-again)
+- [2026-09-05 (contains scorer)](#2026-09-05-contains-scorer)
+- [2026-09-06](#2026-09-06)
+- [2026-09-06 (again)](#2026-09-06-again)
+- [2026-09-06 (once more)](#2026-09-06-once-more)
+- [2026-09-06 (yet again)](#2026-09-06-yet-again)
+
 ## 2026-08-31
 
 Wanted to add one small thing this session. First step, per usual, was to check git log and run the tests before touching anything.
@@ -384,3 +408,11 @@ Three sessions already touched main today, so this one is tiny. `gates/__init__.
 Added `load_cases` to the top-level import and `__all__`. One test checking `gates.load_cases is load_cases`.
 
 27 tests pass (was 26), hello eval 2/2, intent eval 6/6, mock_llm eval 3/3.
+
+## 2026-09-06 (index)
+
+Fourth session on main today. Backlog had "DEVLOG.md index at top linking each session" sitting unpicked, and this file was pushing 400 lines with no way to jump to an old entry except scrolling. Wrote a short script to pull every `## ` header and build a link list using GitHub's heading-anchor rules (lowercase, strip punctuation, spaces to hyphens), then dropped it in as an `## index` section right under the intro line.
+
+Also found the sandbox's local checkout of this repo (a different path, left over from earlier sessions today) had drifted from `origin/main` — it had an unpushed "export load_cases" commit that duplicated work another session had already pushed under a different commit hash, plus a stray "fix devlog placeholder" commit repairing an earlier session's DEVLOG.md mishap. Didn't touch any of that; did a fresh `git clone` into a new directory instead of trusting the stale checkout, confirmed it was green (26 tests), and worked from there.
+
+No code changed, only DEVLOG.md. 26 tests pass, hello eval 2/2, intent eval 6/6, mock_llm eval 3/3.
