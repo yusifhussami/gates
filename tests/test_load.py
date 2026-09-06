@@ -83,3 +83,13 @@ def test_load_empty_id_still_shown_in_error(tmp_path):
         assert False, "expected ValueError"
     except ValueError as exc:
         assert "('')" in str(exc)
+
+
+def test_load_non_string_note_gives_clear_error(tmp_path):
+    bad = tmp_path / "bad.yaml"
+    bad.write_text("- id: oops\n  input: hi\n  expect: smalltalk\n  note: [known, flaky]\n")
+    try:
+        load_cases(bad)
+        assert False, "expected ValueError"
+    except ValueError as exc:
+        assert "'note' should be a string" in str(exc)

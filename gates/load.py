@@ -59,6 +59,10 @@ def load_cases(path: str | Path) -> list[Case]:
                 f"{where}: 'tags' should be a list like [{tags!r}], got {tags!r}"
             )
 
+        note = row.get("note")
+        if note is not None and not isinstance(note, str):
+            raise ValueError(f"{where}: 'note' should be a string, got {note!r}")
+
         cases.append(
             Case(
                 id=row["id"],

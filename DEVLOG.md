@@ -355,3 +355,24 @@ No id in the message at all, even though the yaml has one (just an empty one). C
 Also learned that this sandbox can't run `git` for anything (`git --version` alone hangs on a permission prompt that never gets answered), even though plain `python3 --version` and `ls -la <path>` go through fine. Cloned the repo into a Composio remote bash sandbox instead, made the change there, ran the real test suite and all three evals, then pushed through the GitHub API since local `git push` isn't reachable either.
 
 25 tests pass (was 24), hello eval 2/2, intent eval 6/6, mock_llm eval 3/3.
+
+## 2026-09-06 (again)
+
+Main already had today's empty-id fix, so kept this small. Closed out the other loose end from a few days back: `note` wasn't type-checked at all in `load_cases`, same gap as `tags` before it got a check. A list slips through fine and just prints oddly in a FAIL line.
+
+```
+>>> load_cases('/tmp/bad_note.yaml')[0].note
+['known', 'flaky']
+```
+
+Added the same kind of check the `tags` field already has: `note` must be a string or None, otherwise a clear ValueError. One test added.
+
+26 tests pass (was 25), hello eval 2/2, intent eval 6/6, mock_llm eval 3/3.
+
+## 2026-09-06 (once more)
+
+Found the note-field-type-check work already sitting as a committed-but-unpushed local commit in the shared remote sandbox from an earlier session today — it had run out of turn before shipping. Re-ran the full suite and all three evals to confirm it still holds (26 tests, hello 2/2, intent 6/6, mock_llm 3/3), then pushed it through the GitHub API since local `git push` still isn't reachable from here.
+
+Learned: the remote bash sandbox can persist a repo checkout (and unpushed commits) across sessions on the same day, so it's worth a `git log`/`git status` check right after cloning instead of assuming a fresh clone — there may already be finished work waiting to ship.
+
+No new code this session; same 26 tests pass, hello eval 2/2, intent eval 6/6, mock_llm eval 3/3.
