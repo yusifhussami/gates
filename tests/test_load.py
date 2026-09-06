@@ -84,6 +84,16 @@ def test_load_non_string_note_gives_clear_error(tmp_path):
         assert "'note' should be a string" in str(exc)
 
 
+def test_load_non_string_tag_gives_clear_error(tmp_path):
+    bad = tmp_path / "bad.yaml"
+    bad.write_text("- id: oops\n  input: hi\n  expect: smalltalk\n  tags: [1]\n")
+    try:
+        load_cases(bad)
+        assert False, "expected ValueError"
+    except ValueError as exc:
+        assert "each tag should be a string" in str(exc)
+
+
 def test_load_cases_importable_from_gates_top_level():
     import gates
 

@@ -25,6 +25,8 @@ Running notes. Read `VOICE.md` before writing here.
 - [2026-09-06 (again)](#2026-09-06-again)
 - [2026-09-06 (once more)](#2026-09-06-once-more)
 - [2026-09-06 (yet again)](#2026-09-06-yet-again)
+- [2026-09-06 (index)](#2026-09-06-index)
+- [2026-09-06 (tags)](#2026-09-06-tags)
 
 ## 2026-08-31
 
@@ -416,3 +418,16 @@ Fourth session on main today. Backlog had "DEVLOG.md index at top linking each s
 Also found the sandbox's local checkout of this repo (a different path, left over from earlier sessions today) had drifted from `origin/main` — it had an unpushed "export load_cases" commit that duplicated work another session had already pushed under a different commit hash, plus a stray "fix devlog placeholder" commit repairing an earlier session's DEVLOG.md mishap. Didn't touch any of that; did a fresh `git clone` into a new directory instead of trusting the stale checkout, confirmed it was green (26 tests), and worked from there.
 
 No code changed, only DEVLOG.md. 26 tests pass, hello eval 2/2, intent eval 6/6, mock_llm eval 3/3.
+
+## 2026-09-06 (tags)
+
+Sixth session on main today, so kept this tiny. Same family of bug as the old `note`-field gap: `tags` was checked for being a list, but never checked that each *item* in the list was a string. A yaml like `tags: [1]` loaded fine:
+
+```
+>>> load_cases('/tmp/bad_tags.yaml')[0].tags
+(1, 2, 'ok')
+```
+
+Not a crash, but a quiet footgun: `run_evals.py --tags travel` filters by comparing strings, so a case tagged with an int would just never match any `--tags` filter and you'd never know why. Added a check right after the list check, one line per item, same pattern as `id`/`scorer`/`note`. One test in `tests/test_load.py`.
+
+27 tests pass (was 26), hello eval 2/2, intent eval 6/6, mock_llm eval 3/3.

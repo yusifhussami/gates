@@ -58,6 +58,9 @@ def load_cases(path: str | Path) -> list[Case]:
             raise ValueError(
                 f"{where}: 'tags' should be a list like [{tags!r}], got {tags!r}"
             )
+        for tag in tags:
+            if not isinstance(tag, str):
+                raise ValueError(f"{where}: each tag should be a string, got {tag!r}")
 
         note = row.get("note")
         if note is not None and not isinstance(note, str):
