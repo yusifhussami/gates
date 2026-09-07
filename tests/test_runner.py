@@ -84,3 +84,9 @@ def test_one_of_rejects_when_expect_not_a_list_and_got_differs():
     c = Case(id="a", input="x", expect="yes", scorer=one_of)
     report = run_suite([c], lambda _: "no")
     assert report.failed == 1
+
+
+def test_json_keys_rejects_when_expect_not_a_dict():
+    c = Case(id="a", input="x", expect=["intent", "billing"], scorer=json_keys)
+    report = run_suite([c], lambda _: {"intent": "billing"})
+    assert report.failed == 1

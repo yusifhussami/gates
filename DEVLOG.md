@@ -32,6 +32,7 @@ Running notes. Read `VOICE.md` before writing here.
 - [2026-09-07 (again)](#2026-09-07-again)
 - [2026-09-07 (scorers)](#2026-09-07-scorers)
 - [2026-09-07 (one_of)](#2026-09-07-one_of)
+- [2026-09-07 (json_keys again)](#2026-09-07-json_keys-again)
 
 ## 2026-08-31
 
@@ -493,3 +494,11 @@ def one_of(got, expect):
 Only the list-form (`expect: [a, b]`) had a test. Added two for the fallback: a case where `expect` is a plain string and it matches, and one where it doesn't, so both sides of that `==` are covered the same way `exact` already is.
 
 34 tests pass (was 32), hello eval 2/2, intent eval 6/6, mock_llm eval 3/3.
+
+## 2026-09-07 (json_keys again)
+
+Fifth session on main today, so kept this one tiny too. `json_keys` checks `isinstance(expect, dict)` and bails to `False` if it isn't, but nothing exercised that side of the check — only the "invalid json string" and "partial match" paths had tests. Passing a list as `expect` (easy yaml mistake, e.g. writing it like a `one_of` case by accident) was silently untested.
+
+Added one test: `expect=["intent", "billing"]` against a valid `got` dict, asserting it fails instead of crashing or matching wrong.
+
+35 tests pass (was 34), hello eval 2/2, intent eval 6/6, mock_llm eval 3/3.
