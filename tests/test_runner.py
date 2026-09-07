@@ -72,3 +72,15 @@ def test_json_keys_rejects_invalid_json_string():
     c = Case(id="a", input="x", expect={"intent": "billing"}, scorer=json_keys)
     report = run_suite([c], lambda _: "not valid json")
     assert report.failed == 1
+
+
+def test_one_of_falls_back_to_exact_when_expect_not_a_list():
+    c = Case(id="a", input="x", expect="yes", scorer=one_of)
+    report = run_suite([c], lambda _: "yes")
+    assert report.passed == 1
+
+
+def test_one_of_rejects_when_expect_not_a_list_and_got_differs():
+    c = Case(id="a", input="x", expect="yes", scorer=one_of)
+    report = run_suite([c], lambda _: "no")
+    assert report.failed == 1

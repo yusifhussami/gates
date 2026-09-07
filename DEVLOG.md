@@ -31,6 +31,7 @@ Running notes. Read `VOICE.md` before writing here.
 - [2026-09-07](#2026-09-07)
 - [2026-09-07 (again)](#2026-09-07-again)
 - [2026-09-07 (scorers)](#2026-09-07-scorers)
+- [2026-09-07 (one_of)](#2026-09-07-one_of)
 
 ## 2026-08-31
 
@@ -477,3 +478,18 @@ Third session on main today, so kept this tiny. `json_keys` had a test for the h
 Real case this covers: your router is supposed to return JSON but starts returning a plain string (a bug, a bad prompt change, whatever) — you want that to show up as a normal `[FAIL]`, not a crash. Added one test in `tests/test_runner.py` confirming exactly that.
 
 32 tests pass (was 31), hello eval 2/2, intent eval 6/6, mock_llm eval 3/3.
+
+## 2026-09-07 (one_of)
+
+Fourth session on main today, so kept this one small too. Backlog note from an earlier session pointed at `one_of` falling back to plain `==` when `expect` isn't a list/tuple/set — that branch existed in `gates/scorers.py` since the start but had no test:
+
+```python
+def one_of(got, expect):
+    if not isinstance(expect, (list, tuple, set)):
+        return got == expect
+    return got in expect
+```
+
+Only the list-form (`expect: [a, b]`) had a test. Added two for the fallback: a case where `expect` is a plain string and it matches, and one where it doesn't, so both sides of that `==` are covered the same way `exact` already is.
+
+34 tests pass (was 32), hello eval 2/2, intent eval 6/6, mock_llm eval 3/3.
