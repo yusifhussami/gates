@@ -104,6 +104,16 @@ def test_load_non_string_tag_gives_clear_error(tmp_path):
         assert "each tag should be a string" in str(exc)
 
 
+def test_load_non_string_input_gives_clear_error(tmp_path):
+    bad = tmp_path / "bad.yaml"
+    bad.write_text("- id: oops\n  input: 123\n  expect: smalltalk\n")
+    try:
+        load_cases(bad)
+        assert False, "expected ValueError"
+    except ValueError as exc:
+        assert "'input' should be a string" in str(exc)
+
+
 def test_load_cases_importable_from_gates_top_level():
     import gates
 

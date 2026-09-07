@@ -28,6 +28,7 @@ Running notes. Read `VOICE.md` before writing here.
 - [2026-09-06 (index)](#2026-09-06-index)
 - [2026-09-06 (tags)](#2026-09-06-tags)
 - [2026-09-06 (id)](#2026-09-06-id)
+- [2026-09-07](#2026-09-07)
 
 ## 2026-08-31
 
@@ -445,3 +446,16 @@ Same shape as the tags and note gaps: `id` was checked for being hashable (a lis
 Duplicate-id checks and `--tags` filtering both assume strings downstream, so this was one more version of the same footgun as before. Added the check right after the hashability one, same pattern as `tags`/`note`. One test in `tests/test_load.py`.
 
 28 tests pass (was 27), hello eval 2/2, intent eval 6/6, mock_llm eval 3/3.
+
+## 2026-09-07
+
+Same family of bug as `id`/`tags`/`note` from yesterday: `load_cases` required an `input` field but never checked it was a string. `Case.input` is typed `str`, and `contains`/`json_keys` scorers, plus the demo routers, all assume `input` is text you can pass to a router function or `str.contains`-style check. A yaml like `input: 123` loaded fine and would only blow up later, deep inside whatever router function you passed to `--fn`, with a confusing error far from the actual mistake.
+
+```
+>>> load_cases('/tmp/bad_input.yaml')[0].input
+123
+```
+
+Added the same "should be a string" check right after the `tags` check, before `note`. One test in `tests/test_load.py`, same shape as `test_load_non_string_id_gives_clear_error`.
+
+29 tests pass (was 28), hello eval 2/2, intent eval 6/6, mock_llm eval 3/3.
