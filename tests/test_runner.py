@@ -54,3 +54,15 @@ def test_runner_catches_exceptions():
     report = run_suite([c], bad)
     assert report.failed == 1
     assert report.results[0].error == "kaboom"
+
+
+def test_pass_rate_empty_suite():
+    report = run_suite([], lambda _: "y")
+    assert report.pass_rate == 1.0
+
+
+def test_pass_rate_reflects_mixed_results():
+    a = Case(id="a", input="hit", expect="yes", scorer=exact)
+    b = Case(id="b", input="miss", expect="yes", scorer=exact)
+    report = run_suite([a, b], lambda text: "yes" if text == "hit" else "no")
+    assert report.pass_rate == 0.5

@@ -29,6 +29,7 @@ Running notes. Read `VOICE.md` before writing here.
 - [2026-09-06 (tags)](#2026-09-06-tags)
 - [2026-09-06 (id)](#2026-09-06-id)
 - [2026-09-07](#2026-09-07)
+- [2026-09-07 (again)](#2026-09-07-again)
 
 ## 2026-08-31
 
@@ -152,7 +153,7 @@ Small goal: poke at `tags` since it hasn't had much attention. Tried the beginne
 ValueError: /tmp/bad_tags.yaml: case 0 ('oops'): 'tags' should be a list like ['baseline'], got 'baseline'
 ```
 
-Added a test for it in `tests/test_load.py`. 15 tests pass, hello eval 2/2, intent eval 5/5, `--tags travel` still gives 1/1.
+Added a test for it in `tests/test_load.py`. 15 tests pass, hello eval 2/2, intent eval 5/5, `--tags travel` still 1/1.
 
 ## 2026-09-03 (again)
 
@@ -459,3 +460,11 @@ Same family of bug as `id`/`tags`/`note` from yesterday: `load_cases` required a
 Added the same "should be a string" check right after the `tags` check, before `note`. One test in `tests/test_load.py`, same shape as `test_load_non_string_id_gives_clear_error`.
 
 29 tests pass (was 28), hello eval 2/2, intent eval 6/6, mock_llm eval 3/3.
+
+## 2026-09-07 (again)
+
+Main already had today's `input` type check, so kept this tiny. `SuiteReport.pass_rate` has been in `gates/runner.py` since the start, but `tests/test_runner.py` never once called it — `passed` and `failed` both had coverage, this one didn't.
+
+Added two tests: an empty suite gives `1.0` (nothing to fail), and a two-case suite with one hit and one miss gives `0.5`.
+
+31 tests pass (was 29), hello eval 2/2, intent eval 6/6, mock_llm eval 3/3.
