@@ -32,7 +32,7 @@ Running notes. Read `VOICE.md` before writing here.
 - [2026-09-07 (again)](#2026-09-07-again)
 - [2026-09-07 (scorers)](#2026-09-07-scorers)
 - [2026-09-07 (one_of)](#2026-09-07-one_of)
-- [2026-09-07 (json_keys again)](#2026-09-07-json_keys-again)
+- [2026-09-07 (scorer type check)](#2026-09-07-scorer-type-check)
 
 ## 2026-08-31
 
@@ -495,10 +495,19 @@ Only the list-form (`expect: [a, b]`) had a test. Added two for the fallback: a 
 
 34 tests pass (was 32), hello eval 2/2, intent eval 6/6, mock_llm eval 3/3.
 
-## 2026-09-07 (json_keys again)
+## 2026-09-07 (scorer type check)
 
-Fifth session on main today, so kept this one tiny too. `json_keys` checks `isinstance(expect, dict)` and bails to `False` if it isn't, but nothing exercised that side of the check — only the "invalid json string" and "partial match" paths had tests. Passing a list as `expect` (easy yaml mistake, e.g. writing it like a `one_of` case by accident) was silently untested.
+Fifth session on main today, so kept this tiny too. `load_cases` already wraps the `id` hashability check in `except TypeError`, and it turns out `scorer` has the exact same guard sitting right below it:
 
-Added one test: `expect=["intent", "billing"]` against a valid `got` dict, asserting it fails instead of crashing or matching wrong.
+```python
+try:
+    scorer = _SCORERS.get(scorer_name)
+except TypeError:
+    raise ValueError(f"{where}: 'scorer' should be a plain value like a string, got {scorer_name!r}") from None
+```
+
+So `scorer: [nope]` in a yaml already gets a clear error instead of crashing on `TypeError: unhashable type: 'list'` — the code was already right, it just had zero test coverage proving it, unlike the `id` version of the same guard.
+
+Added one test in `tests/test_load.py`, same shape as `test_load_unhashable_id_gives_clear_error`.
 
 35 tests pass (was 34), hello eval 2/2, intent eval 6/6, mock_llm eval 3/3.
