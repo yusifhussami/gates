@@ -66,3 +66,9 @@ def test_pass_rate_reflects_mixed_results():
     b = Case(id="b", input="miss", expect="yes", scorer=exact)
     report = run_suite([a, b], lambda text: "yes" if text == "hit" else "no")
     assert report.pass_rate == 0.5
+
+
+def test_json_keys_rejects_invalid_json_string():
+    c = Case(id="a", input="x", expect={"intent": "billing"}, scorer=json_keys)
+    report = run_suite([c], lambda _: "not valid json")
+    assert report.failed == 1
