@@ -41,3 +41,22 @@ def test_cli_missing_function_is_clear_error():
     assert proc.returncode == 2
     assert "Traceback" not in proc.stderr
     assert "'examples.hello_router' has no function 'nope_fn'" in proc.stderr
+
+
+def test_cli_fn_without_colon_is_clear_error():
+    proc = subprocess.run(
+        [
+            sys.executable,
+            str(ROOT / "run_evals.py"),
+            str(ROOT / "evals" / "hello.yaml"),
+            "--fn",
+            "examples.hello_router",
+        ],
+        cwd=ROOT,
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    assert proc.returncode == 2
+    assert "Traceback" not in proc.stderr
+    assert "Pass a function like: examples.hello_router:route" in proc.stderr
