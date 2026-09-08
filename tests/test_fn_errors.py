@@ -60,3 +60,22 @@ def test_cli_fn_without_colon_is_clear_error():
     assert proc.returncode == 2
     assert "Traceback" not in proc.stderr
     assert "Pass a function like: examples.hello_router:route" in proc.stderr
+
+
+def test_cli_fn_not_callable_is_clear_error():
+    proc = subprocess.run(
+        [
+            sys.executable,
+            str(ROOT / "run_evals.py"),
+            str(ROOT / "evals" / "hello.yaml"),
+            "--fn",
+            "examples.hello_router:__name__",
+        ],
+        cwd=ROOT,
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    assert proc.returncode == 2
+    assert "Traceback" not in proc.stderr
+    assert "'__name__' in 'examples.hello_router' isn't a function, it's a str" in proc.stderr

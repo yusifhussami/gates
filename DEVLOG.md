@@ -571,3 +571,11 @@ Also swept `gates/scorers.py`, `gates/runner.py` (including `SuiteReport.pass_ra
 **Learned:** when a whole file (scorers.py) or whole error-path family looks done, it's worth doing one more full sweep before assuming there's nothing left — the `--fn` no-colon gap was sitting right next to two already-fixed siblings in the same file.
 
 **Next idea:** haven't looked closely at `gates/case.py` or the YAML loading of `tags`/`note` defaults (e.g. what happens with `tags: null` vs omitted) — worth a look next session.
+
+## 2026-09-08 (sixth)
+
+Sixth session on `main` today, so kept this tiny. The `--fn` handling already covers a bad module, a missing function, and no colon, but if `--fn` points at something that exists and just isn't callable (a module-level constant, say) nothing caught it at the CLI level. It would sail through and only blow up once `run_suite` tried to call it, so every case in the suite would fail with `error='str' object is not callable` instead of one clear message up front.
+
+Added a `callable(fn)` check right after the `getattr`, with a message in the same shape as the other three: `'__name__' in 'examples.hello_router' isn't a function, it's a str`. Tested it by pointing `--fn` at `examples.hello_router:__name__` — every module has that attribute for free and it's never callable, so no new fixture file needed.
+
+43 tests pass (was 42), hello eval 2/2, intent eval 6/6, mock_llm eval 3/3.

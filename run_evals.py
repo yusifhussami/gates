@@ -50,6 +50,10 @@ def main() -> int:
         print(f"'{mod_name}' has no function '{attr}'", file=sys.stderr)
         return 2
 
+    if not callable(fn):
+        print(f"'{attr}' in '{mod_name}' isn't a function, it's a {type(fn).__name__}", file=sys.stderr)
+        return 2
+
     try:
         cases = load_cases(args.suite)
     except FileNotFoundError:
