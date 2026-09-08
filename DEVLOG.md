@@ -34,6 +34,7 @@ Running notes. Read `VOICE.md` before writing here.
 - [2026-09-07 (one_of)](#2026-09-07-one_of)
 - [2026-09-07 (json_keys again)](#2026-09-07-json_keys-again)
 - [2026-09-07 (scorer type check)](#2026-09-07-scorer-type-check)
+- [2026-09-08](#2026-09-08)
 
 ## 2026-08-31
 
@@ -520,3 +521,13 @@ So `scorer: [nope]` in a yaml already gets a clear error instead of crashing on 
 Added one test in `tests/test_load.py`, same shape as `test_load_unhashable_id_gives_clear_error`.
 
 36 tests pass (was 35), hello eval 2/2, intent eval 6/6, mock_llm eval 3/3.
+
+## 2026-09-08
+
+Checked `git log` first — nothing had shipped yet today, so a normal-sized session was fine. Ran the full suite before touching anything: 36 passed.
+
+`run_evals.py`'s `--fn` handling already gives clean errors for a bad module (`can't import '...'`) and a missing function (`'...' has no function '...'`) instead of a raw traceback — good beginner-friendly behavior. But neither path had a test, unlike the CLI's other error cases (`--tags` no-match, missing suite file, bad yaml) which `tests/test_tags.py` already covers.
+
+Added `tests/test_fn_errors.py` with two subprocess tests: `--fn examples.nope_router:route` (bad module) and `--fn examples.hello_router:nope_fn` (missing function), each asserting exit code 2, no traceback, and the right message.
+
+38 tests pass (was 36), hello eval 2/2, intent eval 6/6.
