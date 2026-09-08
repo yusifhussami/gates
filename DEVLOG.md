@@ -539,3 +539,13 @@ Main already had a commit today, so kept this one small. `run_suite` returns a `
 Added `SuiteReport` to `gates/__init__.py`'s imports and `__all__`, plus one test mirroring `test_load_cases_importable_from_gates_top_level`.
 
 39 tests pass (was 38), hello eval 2/2, intent eval 6/6, mock_llm eval 3/3.
+
+## 2026-09-08 (third)
+
+Third session on `main` today, so kept this one small too. Went looking in `gates/load.py` for another "guard exists but has no test" gap like the recent `one_of`/`json_keys`/`scorer` ones — found two: `load_cases` raises a clear `"expected a list of cases"` error when the top-level YAML isn't a list, and a separate `"expected a mapping with id/input/expect"` error when a list item isn't a dict. Neither had a test, even though every other validation branch in that function does.
+
+Added one test, `test_load_non_list_yaml_gives_clear_error`, covering the top-level case (a YAML file that's a mapping instead of a list). Left the per-row mapping check for a future session — didn't want to stack two new tests in one small session.
+
+Also hit a near-miss shipping this: a probe call meant to test a parameter went out as a real commit with placeholder content and briefly clobbered `tests/test_load.py` on `main`. Caught it immediately by checking the commit response and fixed it with a follow-up commit restoring the real content. Lesson for next time: never send a real mutating GitHub call with placeholder content, even "just to test a field" — the near-miss note from 2026-09-07 said the same thing and it happened again anyway.
+
+40 tests pass (was 39), hello eval 2/2, intent eval 6/6, mock_llm eval 3/3.
