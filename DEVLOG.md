@@ -549,3 +549,11 @@ Added one test, `test_load_non_list_yaml_gives_clear_error`, covering the top-le
 Also hit a near-miss shipping this: a probe call meant to test a parameter went out as a real commit with placeholder content and briefly clobbered `tests/test_load.py` on `main`. Caught it immediately by checking the commit response and fixed it with a follow-up commit restoring the real content. Lesson for next time: never send a real mutating GitHub call with placeholder content, even "just to test a field" — the near-miss note from 2026-09-07 said the same thing and it happened again anyway.
 
 40 tests pass (was 39), hello eval 2/2, intent eval 6/6, mock_llm eval 3/3.
+
+## 2026-09-08 (fourth)
+
+Fourth session on `main` today, so kept this tiny. The last entry flagged a gap and skipped it on purpose: `load_cases` also raises a clear error when a list item isn't a mapping (`"expected a mapping with id/input/expect"`), but nothing tested that branch, only the top-level "not a list" one.
+
+Added `test_load_non_mapping_row_gives_clear_error`: a yaml file with one good case followed by a bare string instead of a mapping, checking `load_cases` raises with that message instead of blowing up on `row.get`.
+
+41 tests pass (was 40), hello eval 2/2, intent eval 6/6, mock_llm eval 3/3.
