@@ -138,3 +138,13 @@ def test_load_non_list_yaml_gives_clear_error(tmp_path):
         assert False, "expected ValueError"
     except ValueError as exc:
         assert "expected a list of cases" in str(exc)
+
+
+def test_load_non_mapping_row_gives_clear_error(tmp_path):
+    bad = tmp_path / "bad.yaml"
+    bad.write_text("- id: oops\n  input: hi\n  expect: smalltalk\n- just a string\n")
+    try:
+        load_cases(bad)
+        assert False, "expected ValueError"
+    except ValueError as exc:
+        assert "expected a mapping with id/input/expect" in str(exc)
