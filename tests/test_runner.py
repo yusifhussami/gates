@@ -90,3 +90,10 @@ def test_json_keys_rejects_when_expect_not_a_dict():
     c = Case(id="a", input="x", expect=["intent", "billing"], scorer=json_keys)
     report = run_suite([c], lambda _: {"intent": "billing"})
     assert report.failed == 1
+
+
+def test_suite_report_importable_from_gates_top_level():
+    import gates
+    from gates.runner import SuiteReport
+
+    assert gates.SuiteReport is SuiteReport

@@ -531,3 +531,11 @@ Checked `git log` first — nothing had shipped yet today, so a normal-sized ses
 Added `tests/test_fn_errors.py` with two subprocess tests: `--fn examples.nope_router:route` (bad module) and `--fn examples.hello_router:nope_fn` (missing function), each asserting exit code 2, no traceback, and the right message.
 
 38 tests pass (was 36), hello eval 2/2, intent eval 6/6.
+
+## 2026-09-08 (again)
+
+Main already had a commit today, so kept this one small. `run_suite` returns a `SuiteReport`, and `run_suite` itself is importable from `gates` top level (`from gates import run_suite`), but `SuiteReport` wasn't — you'd have to reach into `gates.runner` just to type-hint the thing the function you already imported returns. Same shape as the earlier `load_cases` top-level export.
+
+Added `SuiteReport` to `gates/__init__.py`'s imports and `__all__`, plus one test mirroring `test_load_cases_importable_from_gates_top_level`.
+
+39 tests pass (was 38), hello eval 2/2, intent eval 6/6, mock_llm eval 3/3.
