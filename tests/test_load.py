@@ -54,6 +54,13 @@ def test_load_bad_tags_gives_clear_error(tmp_path):
         assert "'tags' should be a list" in str(exc)
 
 
+def test_load_null_tags_treated_as_no_tags(tmp_path):
+    p = tmp_path / "cases.yaml"
+    p.write_text("- id: ok\n  input: hi\n  expect: smalltalk\n  tags:\n")
+    cases = load_cases(p)
+    assert cases[0].tags == ()
+
+
 def test_load_unhashable_id_gives_clear_error(tmp_path):
     bad = tmp_path / "bad.yaml"
     bad.write_text("- id: [oops]\n  input: hi\n  expect: smalltalk\n")

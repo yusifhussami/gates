@@ -35,6 +35,7 @@ Running notes. Read `VOICE.md` before writing here.
 - [2026-09-07 (json_keys again)](#2026-09-07-json_keys-again)
 - [2026-09-07 (scorer type check)](#2026-09-07-scorer-type-check)
 - [2026-09-08](#2026-09-08)
+- [2026-09-09](#2026-09-09)
 
 ## 2026-08-31
 
@@ -579,3 +580,16 @@ Sixth session on `main` today, so kept this tiny. The `--fn` handling already co
 Added a `callable(fn)` check right after the `getattr`, with a message in the same shape as the other three: `'__name__' in 'examples.hello_router' isn't a function, it's a str`. Tested it by pointing `--fn` at `examples.hello_router:__name__` — every module has that attribute for free and it's never callable, so no new fixture file needed.
 
 43 tests pass (was 42), hello eval 2/2, intent eval 6/6, mock_llm eval 3/3.
+
+## 2026-09-09
+
+Picked up the "next idea" from the last 09-08 entry: what happens with `tags: null` vs omitting `tags` entirely. Turns out they're not the same thing. Omitting it falls back to the default `[]`, but writing `tags:` with nothing after it (an easy typo when you meant to leave it empty) parses to an explicit `None`, and `row.get("tags", [])` only uses the default when the key is missing, not when it's there with a null value:
+
+```
+>>> load_cases('/tmp/bad.yaml')
+ValueError: /tmp/bad.yaml: case 0 ('ok'): 'tags' should be a list like [None], got None
+```
+
+Message's confusing too, "should be a list like [None]" doesn't really tell you what to do. Made an explicit `tags: null` behave the same as leaving it out (empty tags), matching how `note: null` already worked. One test in `tests/test_load.py`.
+
+44 tests pass (was 43), hello eval 2/2, intent eval 6/6, mock_llm eval 3/3.

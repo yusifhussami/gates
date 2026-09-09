@@ -56,6 +56,8 @@ def load_cases(path: str | Path) -> list[Case]:
             raise ValueError(f"{where}: unknown scorer '{scorer_name}', pick one of {list(_SCORERS)}")
 
         tags = row.get("tags", [])
+        if tags is None:
+            tags = []
         if not isinstance(tags, (list, tuple)):
             raise ValueError(
                 f"{where}: 'tags' should be a list like [{tags!r}], got {tags!r}"
